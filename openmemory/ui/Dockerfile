@@ -24,7 +24,17 @@ COPY --from=deps /app/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY . .
 
 RUN cp next.config.dev.mjs next.config.mjs
-RUN cp .env.example .env
+# --- 关键修改开始 ---
+# 1. 声明接收构建参数
+ARG NEXT_PUBLIC_API_URL
+
+# 2. 将其设置为环境变量，Next.js 构建时会自动抓取
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+
+# 3. 删掉下面这一行，或者确保它在 ENV 之前执行（建议直接删掉）
+# RUN cp .env.example .env 
+# --- 关键修改结束 ---
+
 RUN pnpm build
 
 FROM base AS runner
@@ -48,5 +58,7 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-ENTRYPOINT ["/home/nextjs/entrypoint.sh"]
+# 注释掉或删掉这行，它就是 SyntaxError 的元凶
+# ENTRYPOINT ["/home/nextjs/entrypoint.sh"] 
+
 CMD ["node", "server.js"]

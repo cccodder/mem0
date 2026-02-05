@@ -131,6 +131,9 @@ def reset_memory_client():
     global _memory_client, _config_hash
     _memory_client = None
     _config_hash = None
+    # Also reset categorization client so it picks up new LLM config
+    from app.utils.categorization import reset_categorization_client
+    reset_categorization_client()
 
 
 def get_default_memory_config():

@@ -101,6 +101,8 @@ export function FormView({ settings, onChange }: FormViewProps) {
   const needsEmbedderApiKey = settings.mem0?.embedder?.provider?.toLowerCase() !== "ollama"
   const isLlmOllama = settings.mem0?.llm?.provider?.toLowerCase() === "ollama"
   const isEmbedderOllama = settings.mem0?.embedder?.provider?.toLowerCase() === "ollama"
+  const isLlmOpenAI = settings.mem0?.llm?.provider?.toLowerCase() === "openai" || settings.mem0?.llm?.provider?.toLowerCase() === "azure_openai"
+  const isEmbedderOpenAI = settings.mem0?.embedder?.provider?.toLowerCase() === "openai" || settings.mem0?.embedder?.provider?.toLowerCase() === "azure_openai"
 
   const LLM_PROVIDERS = {
     "OpenAI": "openai",
@@ -220,10 +222,10 @@ export function FormView({ settings, onChange }: FormViewProps) {
                   value={settings.mem0?.llm?.config?.api_key || ""}
                   onChange={(e) => handleLlmConfigChange("api_key", e.target.value)}
                 />
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  type="button" 
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  type="button"
                   className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 w-7"
                   onClick={() => setShowLlmApiKey(!showLlmApiKey)}
                 >
@@ -232,6 +234,21 @@ export function FormView({ settings, onChange }: FormViewProps) {
               </div>
               <p className="text-xs text-muted-foreground mt-1">
                 Use "env:API_KEY" to load from environment variable, or enter directly
+              </p>
+            </div>
+          )}
+
+          {isLlmOpenAI && (
+            <div className="space-y-2">
+              <Label htmlFor="llm-openai-url">OpenAI Base URL (Optional)</Label>
+              <Input
+                id="llm-openai-url"
+                placeholder="https://api.openai.com/v1"
+                value={settings.mem0?.llm?.config?.openai_base_url || ""}
+                onChange={(e) => handleLlmConfigChange("openai_base_url", e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Leave empty to use default OpenAI API endpoint, or enter a custom endpoint (e.g., for OpenRouter, local proxy)
               </p>
             </div>
           )}
@@ -334,10 +351,10 @@ export function FormView({ settings, onChange }: FormViewProps) {
                   value={settings.mem0?.embedder?.config?.api_key || ""}
                   onChange={(e) => handleEmbedderConfigChange("api_key", e.target.value)}
                 />
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  type="button" 
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  type="button"
                   className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 w-7"
                   onClick={() => setShowEmbedderApiKey(!showEmbedderApiKey)}
                 >
@@ -346,6 +363,21 @@ export function FormView({ settings, onChange }: FormViewProps) {
               </div>
               <p className="text-xs text-muted-foreground mt-1">
                 Use "env:API_KEY" to load from environment variable, or enter directly
+              </p>
+            </div>
+          )}
+
+          {isEmbedderOpenAI && (
+            <div className="space-y-2">
+              <Label htmlFor="embedder-openai-url">OpenAI Base URL (Optional)</Label>
+              <Input
+                id="embedder-openai-url"
+                placeholder="https://api.openai.com/v1"
+                value={settings.mem0?.embedder?.config?.openai_base_url || ""}
+                onChange={(e) => handleEmbedderConfigChange("openai_base_url", e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Leave empty to use default OpenAI API endpoint, or enter a custom endpoint
               </p>
             </div>
           )}
